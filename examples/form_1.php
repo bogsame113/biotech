@@ -101,9 +101,7 @@
       <h3 class="panel-title"><?php  echo $title; ?></h3>             
     </div>
         <div class="panel panel-primary setup-content" id="step-1">
-            <!-- <div class="panel-heading">
-                 <h3 class="panel-title">form 1</h3>
-            </div> -->
+
             <div class="panel-body">
             <div class="form-group">
                     <label class="control-label">Full Name</label>
@@ -118,9 +116,7 @@
         </div>
         
         <div class="panel panel-primary setup-content" id="step-2">
-            <!-- <div class="panel-heading">
-                 <h3 class="panel-title">form 1</h3>
-            </div> -->
+
             <div class="panel-body">
             <div class="form-group">
                     <label class="control-label">Company Name</label>
@@ -135,9 +131,7 @@
         </div>
         
         <div class="panel panel-primary setup-content" id="step-3">
-            <!-- <div class="panel-heading">
-                 <h3 class="panel-title">Download now!</h3>
-            </div> -->
+
             <div class="panel-body">
                 <div class="form-group">
                     <label class="control-label">Phone Number</label>
@@ -152,7 +146,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
     $(document).ready(function () {
-
     var navListItems = $('div.setup-panel div a'),
         allWells = $('.setup-content'),
         allNextBtn = $('.nextBtn');
@@ -208,7 +201,6 @@
         }
       });
     })
-    // $('#checkboxid').prop('checked')
     $('#second').click(function(){
       $.ajax({
         url:'',
@@ -237,15 +229,6 @@
         }
       });
     })
-
-    function isCheckedById(id) {
-      const el = document.getElementById(id);
-      if (el && el.type === "checkbox" && el.checked) {
-        return true;
-      }
-        console.log("is not checked");
-        return false;
-    }
   </script>   
 <?php 
 

@@ -77,7 +77,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
   <script>
     $(document).ready(function () {
-
+    
     var navListItems = $('div.setup-panel div a'),
         allWells = $('.setup-content'),
         allNextBtn = $('.nextBtn');
@@ -164,14 +164,7 @@
       });
     })
 
-    function isCheckedById(id) {
-      const el = document.getElementById(id);
-      if (el && el.type === "checkbox" && el.checked) {
-        return true;
-      }
-        console.log("is not checked");
-        return false;
-    }
+
   </script>   
 
 

@@ -62,17 +62,6 @@
             <div class="panel-body">
             <div class="form-group">
                 <div>
-                <!-- <label for="dropDownId">Download:</label> -->
-                <select name="dropDownId" id="dropDownId" class="form-control">
-                <option value="0">-- Select Status --</option>
-                <?php 
-                  global $wpdb;
-                  $table_name = $wpdb->prefix . 'fileUpload';  
-                  $ipquery2= $wpdb->get_results("SELECT *    FROM $table_name where active = '1'");       
-                  foreach($ipquery2 as $ss) { ?>
-                    <option value= <?php echo $ss->id ?>><?php echo $ss->file_name ?></option>
-                  <?php }?>
-                </select>
                 <!-- <input type="button" class="button" value="Save" id="save_status" style="margin-top: 11px;"> -->
               </div>
                 </div>
@@ -84,7 +73,15 @@
                     <label class="control-label">How can I help you?</label>
                     <textarea class="form-control" name="message" id="messages" style="height:200px"></textarea>
                 </div>
-                <button class="btn btn-success pull-right" type="submit" id="finish">Download</button>
+                <?php 
+                  global $wpdb;
+                  $table_name = $wpdb->prefix . 'fileUpload';  
+                  $getTitle = $title;
+                  $ipquery23= $wpdb->get_results("SELECT *    FROM $table_name where link=  '". $getTitle. "'");   
+                  foreach($ipquery23 as $ss) {
+                  $urlLink = 'http://localhost/wordpress/wordpress/'.$ss->file_path?>
+                    <a href=<?php echo  $urlLink?>  class="btn btn-success pull-right" id="finish" download=<?php echo $title?>>Download</a>
+                  <?php }?>
             </div>
         </div>
 </div>
@@ -92,8 +89,8 @@
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
   <script>
-    $(document).ready(function () {
 
+    $(document).ready(function () {
     var navListItems = $('div.setup-panel div a'),
         allWells = $('.setup-content'),
         allNextBtn = $('.nextBtn');
@@ -166,6 +163,9 @@
       });
     })
     $('#finish').click(function(){
+      var value = $("#dropDownload option:selected").val();
+      var baseUrl = base_url() + value
+      // alert(baseUrl)
       $.ajax({
         url:'',
         type: 'POST',
@@ -176,18 +176,45 @@
               messages:$('#messages').val(),
               },
         success: function( data ){
+           window.location.href = 'http://localhost/wordpress/wordpress/';
+          // alert('123')
         }
       });
     })
 
-    function isCheckedById(id) {
-      const el = document.getElementById(id);
-      if (el && el.type === "checkbox" && el.checked) {
-        return true;
-      }
-        console.log("is not checked");
-        return false;
+    // base url
+function base_url() {
+    var pathparts = location.pathname.split('/');
+    if (location.host == 'localhost') {
+        var url = location.origin+'/'+pathparts[1].trim('/')+'/'; // http://localhost/myproject/
+    }else{
+        var url = location.origin; // http://stackoverflow.com
     }
+    return url;
+}
+
+    // function isCheckedById(id) {
+    //   const el = document.getElementById(id);
+    //   if (el && el.type === "checkbox" && el.checked) {
+    //     return true;
+    //   }
+    //     console.log("is not checked");
+    //     return false;
+    // }
+
+    // function IsBanned(){
+    //   $.ajax({
+    //     url:'../wp-admin/admin-ajax.php',
+    //     type: 'GET',
+    //     dataType: "json",
+    //     data:{action:'get_data'},
+    //     success: function( data ){
+    //       grid.records = data.result
+    //       grid.searchReset()
+    //       grid.refresh()
+    //     }
+    //   }); 
+    // }
   </script>   
 
 
