@@ -93,15 +93,13 @@ input[type=submit]:hover {
       </style>  
    </head>  
    <body>  
-
-   sdfsdf
       <div id="tabs-1">  
          <ul>  
             <li><a href="#tabs-2">Form Submission</a></li>  
             <li><a href="#tabs-3">Custom Form</a></li>  
             <li><a href="#tabs-4">Create Form</a></li>  
             <li><a href="#tabs-5">Download Files</a></li> 
-            <li><a href="#tabs-6">Block e-Mail</a></li>  
+            <!-- <li><a href="#tabs-6">Settings</a></li>   -->
          </ul>  
          <div id="tabs-2"> 
             <?php
@@ -192,7 +190,7 @@ input[type=submit]:hover {
                   </div>
               </form>
               <div id="fileUpload" style="width: 100%; height: 400px; margin-top:2%"></div>
-              <div align="right" style="margin-top:15px">
+              <div align="right">
                 <label for="dropDownId">Status:</label>
                 <select name="dropDownId" id="dropDownId">
                 <option value="">-- Select Status --</option>
@@ -201,32 +199,12 @@ input[type=submit]:hover {
                   <option value="3">Delete</option>
                 </select>
                 <input type="button" class="button" value="Save" id="save_status" style="margin-top: 11px;">
-                <?php
-                  global $wpdb;
-                  $table_name = $wpdb->prefix . 'biotech_form'; 
-                  $ipquery2= $wpdb->get_results("SELECT *    FROM $table_name where form_type = 'download'"); 
-                ?>
-                <label for="formLink">Select Form to Link a file:</label>
-                <select name="cars" id="formLink" style="margin-bottom:15px">
-                  <option value="all">-- Select Form --</option>
-                  <?php foreach($ipquery2 as $f) { ?>
-                    <option value=<?php echo $f->form_title ?>><?php echo $f->form_title ?></option>
-                    <?php } ?>
-                </select>
-                <input type="button" class="button" value="Save" id="save_link" style="margin-top: 4px;">
               </div>
           </div> 
          </div> 
-         <div id="tabs-6">
-         <h4>Input e-mail to block</h4>
-              <div class="input-group mb-3" style="width:45%">
-                <input type="text" class="form-control" placeholder="e-Mail" id="blockEmail">
-                <div class="input-group-prepend">
-                <button class="btn btn-success"id="save_block" type="submit">Block</button>
-                </div>
-              </div>
-         <div id="Blocker" style="width: 100%; height: 400px; margin-top:2%"></div>
-          </div>   
+         <!-- <div id="tabs-6">
+            dfdf
+          </div>    -->
       </div>  
    </body>  
 </html>
@@ -242,12 +220,12 @@ let grid = new w2grid({
       footer: true
           },
       columns: [
-        { field: 'id', text: 'ID', size: '50px', sortable: true, attr: 'align=center'},
-        { field: 'Email', text: 'e-Mail', size: '30%', sortable: true },
-        { field: 'Full_Name', text: 'First Name', size: '30%', sortable: true },
-        { field: 'Phone', text: 'Phone Number', size: '30%', sortable: true },
-        { field: 'Company', text: 'Company', size: '30%', sortable: true },
-        { field: 'Description', text: 'Message', size: '30%', sortable: true },
+        { field: 'recid', text: 'ID', size: '50px', sortable: true, attr: 'align=center'},
+        { field: 'mail', text: 'e-Mail', size: '30%', sortable: true },
+        { field: 'fullname', text: 'First Name', size: '30%', sortable: true },
+        { field: 'phoneNumber', text: 'Phone Number', size: '30%', sortable: true },
+        { field: 'company', text: 'Company', size: '30%', sortable: true },
+        { field: 'message', text: 'Message', size: '30%', sortable: true },
       ]
   })
   grid.hideColumn('recid');
@@ -266,6 +244,7 @@ let grid = new w2grid({
   }) 
   gridshortcode.hideColumn('recid'); 
   
+  grid.hideColumn('recid');
   let gridfileUpload = new w2grid({
     name: 'fileUpload',
     box: '#fileUpload',
@@ -276,39 +255,23 @@ let grid = new w2grid({
     columns: [
       { field: 'recid', text: 'ID', size: '50px', sortable: true, attr: 'align=center'},
       { field: 'file_name', text: 'File Name', size: '30%', sortable: true },
-      { field: 'link', text: 'Form Linked Title', size: '30%', sortable: true, editable: { type: 'text' } }
+      { field: 'active', text: 'Status', size: '30%', sortable: true, editable: { type: 'text' } }
     ]
-  })  ;
+  })
+  ;
   gridfileUpload.hideColumn('recid');
 
-  let gridBlocker = new w2grid({
-    name: 'Blocker',
-    box: '#Blocker',
-    show: {
-      toolbar: false,
-      footer: true
-    },
-    columns: [
-      { field: 'recid', text: 'ID', size: '50px', sortable: true, attr: 'align=center'},
-      { field: 'mail_add', text: 'e-Mail', size: '30%', sortable: true }
-    ]
-  })  ;
-  gridBlocker.hideColumn('recid');
-  
-
 $( document ).ready(function() {
-  GetzohoData();
-  
+ 
     $.ajax({
         url:'../wp-admin/admin-ajax.php',
         type: 'GET',
         dataType: "json",
         data:{action:'get_data'},
         success: function( data ){
-          // grid.records = data.result
-          // grid.searchReset()
-          // grid.refresh()
-          // console.log(data)
+          grid.records = data.result
+          grid.searchReset()
+          grid.refresh()
         }
       }); //need code for this to load the all data
     $.ajax({
@@ -332,18 +295,6 @@ $( document ).ready(function() {
           gridfileUpload.records = data
           gridfileUpload.searchReset()
           gridfileUpload.refresh()
-        }
-      });
-
-      $.ajax({
-      url:'../wp-admin/admin-ajax.php',
-        type: 'GET',
-        dataType: "json",
-        data:{'action':'blockEmailonLoad'},
-        success: function( data ){
-          gridBlocker.records = data
-          gridBlocker.searchReset()
-          gridBlocker.refresh()
         }
       });
 
@@ -439,25 +390,6 @@ $( document ).ready(function() {
       });
   });
 
-  function GetzohoData(fileName){
-    let ss;
-     $.ajax({
-      url:'../wp-admin/admin-ajax.php',
-        type: 'GET',
-        dataType: "json",
-        data:{'action':'get_zohodata'},
-        success: function( data ){
-          var ss = JSON.parse(data);
-          // grid.records = ss.data
-          // grid.searchReset()
-          // grid.refresh()
-          console.log(ss.access_token);// refresh token
-        }
-      });
-     
-
-  };
-
 
   function GetFileName(fileName){
     $.ajax({
@@ -483,11 +415,9 @@ gridfileUpload.on('click', function(event) {
     }
 });
 
-$("#save_link").click(function(){
+$("#save_status").click(function(){
   var selectedStatus = $('#dropDownId').val();
-  var value = $("#formLink option:selected").val();
-  console.log( {'action':'get_statusChange',
-              'FileData':{'clickFlie':ClickStatus[0],'SelectedStatus':value}})
+  var value = $("#dropDownId option:selected").val();
       $.ajax({
         url:'../wp-admin/admin-ajax.php',
         type: 'GET',
@@ -498,24 +428,8 @@ $("#save_link").click(function(){
           gridfileUpload.records = data
           gridfileUpload.searchReset()
           gridfileUpload.refresh()
-          $('#formLink').prop('selectedIndex',0);
-        }
-      });
-});
-
-$("#save_block").click(function(){
-  var blockEmail = $('#blockEmail').val();
-  console.log(blockEmail);
-      $.ajax({
-        url:'../wp-admin/admin-ajax.php',
-        type: 'GET',
-        dataType: "json",
-        data:{'action':'block_email','emailToBlock':blockEmail},
-        success: function( data ){
-          gridBlocker.records = data
-          gridBlocker.searchReset()
-          gridBlocker.refresh()
-          // $('#blockEmail').val() = '';
+          $('#dropDownId').prop('selectedIndex',0);
+          // document.getElementById("dropDownId").value = "-- Select Status --";
         }
       });
 })

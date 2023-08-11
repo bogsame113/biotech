@@ -12,6 +12,7 @@ function file_table() {
         file_name varchar(100) NULL,
         file_path varchar (1000) NULL,
         active varchar (5) NULL,
+		link varchar (100) NULL,
 		UNIQUE KEY id (id)
 	) $charset_collate;";
 
@@ -24,6 +25,7 @@ function file_table() {
             file_name varchar(100) NULL,
             file_path varchar (1000) NULL,
             active varchar (5) NULL,
+			link varchar (100) NULL,
             UNIQUE KEY id (id)  
 		) $charset_collate;";
 		dbDelta( $sql );

@@ -8,54 +8,6 @@
 
 </head>
 <body>
-    <style>
-        .button_psc{
-            font-size: 12px;
-            color: var(--baseColor);
-            border: 1px solid #c0c6cc;
-            padding: 3px 9px;
-            border-radius: 4px;
-            cursor: pointer;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: inline-flex;
-            align-items: center;
-            padding: 12px 38px;
-            border-radius: 12px;
-            background-color: #f7941d;
-            border: 1.5px solid #f7941d;
-            font-style: normal;
-            font-weight: 600;
-            font-size: 14px;
-            line-height: 17px;
-            text-transform: uppercase;
-            color: #ffffff;
-            transition: 300ms all;
-        }
-
-        .button_psc:hover{
-            background-color: transparent;
-            color: #f7941d;
-        }
-
-        .input_psc{
-            display: block;
-    width: 100%;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 2.5;
-    background-clip: padding-box;
-    border: -0.5px solid #6c757d;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: .375rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-        }
-    </style>
 <form style="border:1px">
 <div class="container">
     <div class="stepwizard">
@@ -80,14 +32,15 @@
     </div>  
    
     <div class="panel-heading">
+      <!-- <h3 class="panel-title"><?php  echo $title; ?></h3>              -->
     </div>
         <div class="panel panel-primary setup-content" id="step-1">
             <div class="panel-body">
                 <div class="form-group">
                     <label class="control-label">E-mail Address</label>
-                    <input maxlength="100" type="text"  class="form-control input_psc" placeholder="E-mail Address" name="emailadd" id="emailadd" required="required" />
+                    <input maxlength="100" type="text"  class="form-control" placeholder="E-mail Address" name="emailadd" id="emailadd" required="required" />
                 </div>
-                <button class=" nextBtn pull-right button_psc" type="button" name="submit" id="first">Next</button>
+                <button class="btn btn-primary nextBtn pull-right" type="button" name="submit" id="first">Next</button>
             </div>
         </div>
         
@@ -95,38 +48,36 @@
             <div class="panel-body">
                 <div class="form-group">
                     <label class="control-label">Full Name</label>
-                    <input maxlength="200" type="text" class="form-control input_psc" placeholder="Full Name (First, Last)"   name="fullname" id="fullname" />
+                    <input maxlength="200" type="text" class="form-control" placeholder="Full Name (First, Last)"   name="fullname" id="fullname" />
                 </div>
                 <div class="form-group">
                     <label class="control-label">Company Name</label>
-                    <input maxlength="200" type="text"  class="form-control input_psc" placeholder="Company Name" name="company" id="company"/>
+                    <input maxlength="200" type="text"  class="form-control" placeholder="Enter Company Address" name="company" id="company"/>
                 </div>
-                <button class=" button_psc nextBtn pull-right" type="button" id="second">Next</button>
+                <button class="btn btn-primary nextBtn pull-right" type="button" id="second">Next</button>
             </div>
         </div>
         
         <div class="panel panel-primary setup-content" id="step-3">
             <div class="panel-body">
                 <div class="form-group">
-                    <label class="control-label">Company Phone Number</label>
-                    <input maxlength="200" type="text" class="form-control input_psc" placeholder="Company Phone Number" name="phonenumber" id="phonenumber" value=""/>
+                    <label class="control-label">Phone Number</label>
+                    <input maxlength="200" type="text" class="form-control" placeholder="Phone Number" name="phonenumber" id="phonenumber" value=""/>
                 </div>
                 <div class="form-group">
                     <label class="control-label">How can I help you?</label>
-                    <textarea class="form-control input_psc" name="message" id="messages" style="height:200px"></textarea>
+                    <textarea class="form-control" name="message" id="messages" style="height:200px"></textarea>
                 </div>
-                <button class=" button_psc pull-right" type="submit" id="finish">Finish!</button>
+                <button class="btn btn-success pull-right" type="submit" id="finish">Finish!</button>
             </div>
         </div>
 </div>
 </form>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
-<script src="https://static.zohocdn.com/zohocrm/v2.0/sdk/3.0.0/sdk.js"></script>
   <script>
     $(document).ready(function () {
-      
-
+    
     var navListItems = $('div.setup-panel div a'),
         allWells = $('.setup-content'),
         allNextBtn = $('.nextBtn');
@@ -164,9 +115,6 @@
 
         if (isValid) nextStepWizard.removeAttr('disabled').trigger('click');
     });
-
-    
-
 
     $('div.setup-panel div a.btn-success').trigger('click');
     });
@@ -241,7 +189,5 @@
                           array('mail'=>$_POST['emailadd'])
                         );
         }
-
-
 
  } 

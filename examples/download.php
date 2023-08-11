@@ -79,7 +79,7 @@
                   $getTitle = $title;
                   $ipquery23= $wpdb->get_results("SELECT *    FROM $table_name where link=  '". $getTitle. "'");   
                   foreach($ipquery23 as $ss) {
-                  $urlLink = 'http://localhost/wordpress/wordpress/'.$ss->file_path?>
+                  $urlLink = home_url().'/'.$ss->file_path?>
                     <a href=<?php echo  $urlLink?>  class="btn btn-success pull-right" id="finish" download=<?php echo $title?>>Download</a>
                   <?php }?>
             </div>
@@ -91,6 +91,8 @@
   <script>
 
     $(document).ready(function () {
+        
+
     var navListItems = $('div.setup-panel div a'),
         allWells = $('.setup-content'),
         allNextBtn = $('.nextBtn');
@@ -149,6 +151,19 @@
       });
     })
     $('#second').click(function(){
+        console.log($('#emailadd').val())
+        $.ajax({
+      url:'../wp-admin/admin-ajax.php',
+        type: 'GET',
+        dataType: "json",
+        data:{'action':'get_mailBlocked','blockedMail':$('#emailadd').val()},
+        success: function( data ){
+            if(data == 1){
+                $('#finish').hide();
+            }
+            
+        }
+      });
       $.ajax({
         url:'',
         type: 'POST',
@@ -176,7 +191,7 @@
               messages:$('#messages').val(),
               },
         success: function( data ){
-           window.location.href = 'http://localhost/wordpress/wordpress/';
+            location.reload();
           // alert('123')
         }
       });
@@ -193,28 +208,6 @@ function base_url() {
     return url;
 }
 
-    // function isCheckedById(id) {
-    //   const el = document.getElementById(id);
-    //   if (el && el.type === "checkbox" && el.checked) {
-    //     return true;
-    //   }
-    //     console.log("is not checked");
-    //     return false;
-    // }
-
-    // function IsBanned(){
-    //   $.ajax({
-    //     url:'../wp-admin/admin-ajax.php',
-    //     type: 'GET',
-    //     dataType: "json",
-    //     data:{action:'get_data'},
-    //     success: function( data ){
-    //       grid.records = data.result
-    //       grid.searchReset()
-    //       grid.refresh()
-    //     }
-    //   }); 
-    // }
   </script>   
 
 

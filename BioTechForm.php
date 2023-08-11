@@ -74,6 +74,10 @@ register_activation_hook( __FILE__, 'form_table' );
 include_once( 'file_table.php');
 register_activation_hook( __FILE__, 'file_table' );
 
+
+include_once( 'blockMail.php');
+register_activation_hook( __FILE__, 'block_email' );
+
 function get_allData(){
     if(isset($_REQUEST)){
         global $wpdb;
@@ -87,7 +91,8 @@ function get_allData(){
                             'company'=>$ss->company,
                             'phoneNumber'=>$ss->phonenumber,
                             'fullname'=>$ss->fullname,
-                            'formType'=>$ss->formType);
+                            'formType'=>$ss->formType,
+                            'banned'=>$ss->banned);
             array_push($client,$items);
         }
         $email = array();
@@ -122,7 +127,8 @@ function getTypeForm(){
                             'company'=>$ss->company,
                             'phoneNumber'=>$ss->phonenumber,
                             'fullname'=>$ss->fullname,
-                            'formType'=>$ss->formType);
+                            'formType'=>$ss->formType,
+                            'banned'=>$ss->banned);
             array_push($client,$items);
         }
         echo json_encode(array('mail'=>$email,'result'=>$client));
@@ -153,13 +159,33 @@ function getShortCode(){
 
 add_action('wp_ajax_get_Shortcode','getShortCode');
 
+
+function getZohoData(){//integration for ZOHO
+    $value1 = 'zoho';  //API Connection Name
+    $value2 = array();  //Array of Body Parameters
+    $value2['refresh_token'] = '1000.85cd2428260afda6fc53b55b397268da.6f91037da6ada4f376e6acf63ad8e93b';
+    $value2['client_id'] = '1000.3M4D6QGXGIZ7LMSUUD852WLOIAGQDK';
+    $value2['client_secret'] = '184b65706e203e027e51ca970b31653656a3cd5840';
+    $value2['grant_type'] = 'refresh_token';
+
+    $value3 = array();
+    $value3['Authorization'] = "Bearer 1000.85cd2428260afda6fc53b55b397268da.6f91037da6ada4f376e6acf63ad8e93b";
+
+    $value = apply_filters('ExternalApiHook', $value1, $value2, $value3); //$value is the response of the External API request.
+    echo json_encode($value);
+    die();
+}
+
+
+add_action('wp_ajax_get_zohodata','getZohoData');
+
 // //file uploader
 function getFileUpload(){
     if(isset($_REQUEST)){
         $fileName = $_REQUEST['fileName'];
         global $wpdb;
         $table_name = $wpdb->prefix . 'fileUpload';  
-        $wpdb->insert($table_name, array('file_name'=>$fileName,'file_path'=>'../wp-content/plugins/biotechForm/upload/'.$fileName,'active'=>1));  
+        $wpdb->insert($table_name, array('file_name'=>$fileName,'file_path'=>'wp-content/plugins/biotechForm/upload/'.$fileName,'active'=>1));  
         $ipquery2= $wpdb->get_results("SELECT *    FROM $table_name where active != '3'");       
         $client =array();
         foreach($ipquery2 as $ss) { 
@@ -171,7 +197,7 @@ function getFileUpload(){
             }
             $items = array('recid'=>$ss->id,
                             'file_name'=>$ss->file_name,
-                            'active'=>$status);
+                            'link'=>$ss->link);
             array_push($client,$items);
         }
         echo json_encode($client);
@@ -197,7 +223,7 @@ function fileUpload(){
             }
             $items = array('recid'=>$ss->id,
                             'file_name'=>$ss->file_name,
-                            'active'=>$status);
+                            'link'=>$ss->link);
             array_push($client,$items);
         }
         echo json_encode($client);
@@ -215,7 +241,7 @@ function fileStatusUpload(){
         $table_name = $wpdb->prefix . 'fileUpload';  
         $wpdb->update($table_name,
                           array(
-                                'active'=>$fileName['SelectedStatus']
+                                'link'=>$fileName['SelectedStatus']
                               ),
                           array('id'=>$fileName['clickFlie'])
                         ); 
@@ -230,7 +256,7 @@ function fileStatusUpload(){
             }
             $items = array('recid'=>$ss->id,
                             'file_name'=>$ss->file_name,
-                            'active'=>$status);
+                            'link'=>$ss->link);
             array_push($client,$items);
         }
         echo json_encode($client);
@@ -241,6 +267,61 @@ function fileStatusUpload(){
 add_action('wp_ajax_get_statusChange','fileStatusUpload');
 
 
+function blockEmail(){
+    if(isset($_REQUEST)){
+        $blockEmail = $_REQUEST['emailToBlock'];
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'Blocked_Email';  
+        $wpdb->insert($table_name, array('mail_add'=>$blockEmail,'statusMail'=>1));  
+        $ipquery2= $wpdb->get_results("SELECT *    FROM $table_name");       
+        $client =array();
+        foreach($ipquery2 as $ss) { 
+            $items = array('recid'=>$ss->id,'mail_add'=>$ss->mail_add);
+            array_push($client,$items);
+        }
+        echo json_encode($client);
+        die();
+    }
+};
+
+add_action('wp_ajax_block_email','blockEmail');
+
+function blockEmailonLoad(){
+    if(isset($_REQUEST)){
+        $blockEmail = $_REQUEST['emailToBlock'];
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'Blocked_Email';  
+        $ipquery2= $wpdb->get_results("SELECT *    FROM $table_name");       
+        $client =array();
+        foreach($ipquery2 as $ss) { 
+            $items = array('recid'=>$ss->id,'mail_add'=>$ss->mail_add);
+            array_push($client,$items);
+        }
+        echo json_encode($client);
+        die();
+    }
+};
+
+add_action('wp_ajax_blockEmailonLoad','blockEmailonLoad');
+
+
+function get_mailBlocked(){
+    if(isset($_REQUEST)){
+        $blockEmail = $_REQUEST['blockedMail'];
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'Blocked_Email';  
+        $ipquery2= $wpdb->get_results("SELECT * FROM $table_name where mail_add='".$blockEmail."'");       
+        // $client =array();
+        // foreach($ipquery2 as $ss) { 
+        //     $items = array('recid'=>$ss->id,'mail_add'=>$ss->mail_add);
+        //     array_push($client,$items);
+        // }
+        echo json_encode(count($ipquery2));
+        die();
+    }
+};
+
+add_action('wp_ajax_get_mailBlocked','get_mailBlocked');
 //end point API for ZOHO ***
 // end point API:http://localhost/biotech/wp-json/GetClient/V1
 function EndPoint( object $data ) {
